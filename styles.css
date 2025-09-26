@@ -1,0 +1,457 @@
+/* --- Basic layout CSS --- */
+:root {
+    --primary: #1976d2;
+    --secondary-bg: #f0f4f8;
+    --card: #ffffff;
+    --accent: #667eea;
+    --hover-green: #4caf50;
+    --text-dark: #1e293b;
+    --text-light: #64748b;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Inter, system-ui, Arial, sans-serif;
+    background: #121933;
+    margin: 0;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 28px auto;
+    padding: 18px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: skyblue;
+}
+
+.header p {
+    margin: 6px 0;
+    color: #ccc;
+}
+
+.card {
+    background: var(--secondary-bg);
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow: 0 6px 18px rgba(20, 20, 60, .06);
+    margin-bottom: 14px;
+}
+
+.nav-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.nav-tab {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: linear-gradient(180deg, #fff, #f6fbff);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.nav-tab.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: .95rem;
+    color: var(--text-dark);
+}
+
+.input-with-icon {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-icon {
+    padding: 10px;
+    background: #f0f4f8;
+    border: 1px solid #dbe7ff;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    color: #64748b;
+    min-width: 40px;
+    text-align: center;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 0 8px 8px 0;
+    border: 1px solid #dbe7ff;
+    background: #fff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    flex: 1;
+}
+
+/* Date input with reduced width */
+input[type="date"] {
+    width: 50%;
+    padding: 10px;
+    border-radius: 0 8px 8px 0;
+    border: 1px solid #dbe7ff;
+    background: #fff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+    outline: none;
+}
+
+/* Textarea with reduced width */
+textarea {
+    resize: vertical;
+    min-height: 62px;
+    border-radius: 8px;
+    border: 1px solid #dbe7ff;
+    width: 50%;
+}
+
+.btn {
+    background: skyblue;
+    border: 0;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #121933;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+    background-color: var(--hover-green);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: #fff;
+    border: 0;
+    padding: 7px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-secondary:hover {
+    background-color: #4b5563;
+}
+
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.item-card {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    color: var(--text-dark);
+}
+
+.item-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.item-status {
+    font-weight: 700;
+    font-size: .78rem;
+    padding: 4px 8px;
+    border-radius: 999px;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.status-lost { background: #fee2e2; color: #b91c1c; }
+.status-found { background: #dcfce7; color: #166534; }
+.status-claimed { background: #dbeafe; color: #1e40af; }
+
+.small {
+    font-size: .86rem;
+    color: var(--text-light);
+}
+
+.badge {
+    display: inline-block;
+    background: #ef4444;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+.flex {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Image upload styling */
+.image-upload-container {
+    margin-bottom: 15px;
+}
+
+.image-preview {
+    width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 1px dashed #dbe7ff;
+    display: none;
+}
+
+.upload-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.upload-btn:hover {
+    background: #dbe7ff;
+}
+
+/* --- LOGIN & REGISTER FORM UPDATES --- */
+#loginTab .login-container {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+#loginTab .login-logo {
+    flex: 1;
+    min-width: 150px;
+    max-width: 200px;
+}
+
+#loginTab .login-logo img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+#loginTab .login-form-fields {
+    flex: 2;
+    min-width: 250px;
+}
+
+#loginEmailTextfield,
+#loginPasswordTextfield {
+    width: 100%;
+    border: 1px solid #dbe7ff;
+}
+
+#registerTab .register-icon {
+    display: block;
+    margin: 0 auto 16px;
+    width: 60px;
+    height: 60px;
+}
+
+#registerTab .form-group {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes slideText {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+}
+
+#motto {
+    font-weight: bold;
+    color: deepskyblue;
+    animation: slideText 17s linear infinite;
+    animation-delay: 2s;
+}
+
+/* --- NOTIFICATION BADGE --- */
+.notify-badge {
+    background: #ef4444;
+    color: #fff;
+    padding: 3px 7px;
+    border-radius: 999px;
+    font-weight: 700;
+    margin-left: 6px;
+    font-size: .8rem;
+}
+
+/* --- DASHBOARD & MAIN APP STYLES --- */
+#topNav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background-color: var(--card);
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+#menuIcon {
+    font-size: 24px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #1e293b;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    padding: 20px;
+}
+
+#sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar-link {
+    display: block;
+    color: white;
+    padding: 15px;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.sidebar-link:hover {
+    background-color: #334155;
+}
+
+#closeSidebar {
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+#dashboardGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.dashboard-item {
+    position: relative;
+    height: 180px;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 12px;
+    overflow: hidden;
+    color: white;
+    transition: transform 0.3s;
+}
+
+.dashboard-item:hover {
+    transform: scale(1.05);
+}
+
+.dashboard-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+    border-radius: 10px;
+}
+
+.dashboard-item .btn {
+    position: relative;
+    z-index: 2;
+    width: 80%;
+    text-align: center;
+}
+
+.tab-content {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* --- RESPONSIVE DESIGN --- */
+@media (max-width:720px) {
+    .container {
+        margin: 12px;
+        padding: 12px;
+    }
+
+    #registerTab .form-group {
+        max-width: 100%;
+    }
+
+    #loginTab .login-container {
+        flex-direction: column;
+    }
+
+    .input-icon {
+        min-width: 35px;
+        padding: 8px;
+    }
+
+    /* Full width on mobile for date and textarea */
+    input[type="date"],
+    textarea {
+        width: 100%;
+    }
+}
