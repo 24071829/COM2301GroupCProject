@@ -42,8 +42,16 @@ To run this project locally:
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/2400415/Lost-and-Found-management-system.git
+
+## 📲 you tube demo:
+👉 [demo video](https://youtu.be/as6qy27yH0c)
+
+---
 ## 🌿 Branch Overview
 
 - `main`: Stable release version.
 - `back-up`: previous versions branch.
+
+## 🫂 Acknowledgement 
+-group c members , who worked night after night to see this being deployed .
 
