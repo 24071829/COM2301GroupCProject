@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>School Lost & Found System (Offline)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- Basic layout CSS --- */
+        :root {
+            --primary: #1976d2;
+            --secondary-bg: #f0f4f8;
+            --card: #ffffff;
+            --accent: #667eea;
+            --hover-green: #4caf50;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Inter, system-ui, Arial, sans-serif;
+            background: #121933;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 28px auto;
+            padding: 18px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: skyblue;
+        }
+
+        .header p {
+            margin: 6px 0;
+            color: #ccc;
+        }
+
+        .card {
+            background: var(--secondary-bg);
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: 0 6px 18px rgba(20, 20, 60, .06);
+            margin-bottom: 14px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: linear-gradient(180deg, #fff, #f6fbff);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: .95rem;
+            color: var(--text-dark);
+        }
+
+        .input-with-icon {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .input-icon {
+            padding: 10px;
+            background: #f0f4f8;
+            border: 1px solid #dbe7ff;
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            color: #64748b;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #dbe7ff;
+            background: #fff;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            flex: 1;
+        }
+
+        /* Date input with reduced width */
+        input[type="date"] {
+            width: 50%;
+            padding: 10px;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #dbe7ff;
+            background: #fff;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+            outline: none;
+        }
+
+        /* Textarea with reduced width */
+        textarea {
+            resize: vertical;
+            min-height: 62px;
+            border-radius: 8px;
+            border: 1px solid #dbe7ff;
+            width: 50%;
+        }
+
+        .btn {
+            background: skyblue;
+            border: 0;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #121933;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--hover-green);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: #fff;
+            border: 0;
+            padding: 7px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .item-card {
+            background: var(--card);
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            color: var(--text-dark);
+        }
+
+        .item-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .item-status {
+            font-weight: 700;
+            font-size: .78rem;
+            padding: 4px 8px;
+            border-radius: 999px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .status-lost {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-found {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-claimed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .small {
+            font-size: .86rem;
+            color: var(--text-light);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #ef4444;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+
+        .flex {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Image upload styling */
+        .image-upload-container {
+            margin-bottom: 15px;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px dashed #dbe7ff;
+            display: none;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .upload-btn:hover {
+            background: #dbe7ff;
+        }
+
+        /* --- LOGIN & REGISTER FORM UPDATES --- */
+
+        #loginTab .login-container {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        #loginTab .login-logo {
+            flex: 1;
+            min-width: 150px;
+            max-width: 200px;
+        }
+
+        #loginTab .login-logo img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        #loginTab .login-form-fields {
+            flex: 2;
+            min-width: 250px;
+        }
+
+        #loginEmailTextfield,
+        #loginPasswordTextfield {
+            width: 100%;
+            border: 1px solid #dbe7ff;
+        }
+
+        #registerTab .register-icon {
+            display: block;
+            margin: 0 auto 16px;
+            width: 60px;
+            height: 60px;
+        }
+
+        #registerTab .form-group {
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* adding animations */
+        @keyframes slideText {
+            from {
+                transform: translateX(-100%);
+            }
+            to {
+                transform: translateX(100%);
+            }
+        }
+
+        #motto {
+            font-weight: bold;
+            color: deepskyblue;
+            animation: slideText 17s linear infinite;
+            animation-delay: 2s;
+        }
+
+        .notify-badge {
+            background: #ef4444;
+            color: #fff;
+            padding: 3px 7px;
+            border-radius: 999px;
+            font-weight: 700;
+            margin-left: 6px;
+            font-size: .8rem;
+        }
+
+        /* --- DASHBOARD & MAIN APP STYLES --- */
+        #topNav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background-color: var(--card);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        #menuIcon {
+            font-size: 24px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #1e293b;
+            z-index: 100;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            padding: 20px;
+        }
+
+        #sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-link {
+            display: block;
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-link:hover {
+            background-color: #334155;
+        }
+
+        #closeSidebar {
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        #dashboardGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .dashboard-item {
+            position: relative;
+            height: 180px;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-end; /* Align content to the bottom */
+            justify-content: center; /* Center content horizontally */
+            padding: 12px;
+            overflow: hidden;
+            color: white;
+            transition: transform 0.3s;
+        }
+
+        .dashboard-item:hover {
+            transform: scale(1.05);
+        }
+
+        .dashboard-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+            border-radius: 10px;
+        }
+
+        .dashboard-item .btn {
+            position: relative;
+            z-index: 2;
+            width: 80%;
+            text-align: center;
+        }
+
+        .tab-content {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        /* responsive */
+        @media (max-width:720px) {
+            .container {
+                margin: 12px;
+                padding: 12px;
+            }
+
+            #registerTab .form-group {
+                max-width: 100%;
+            }
+
+            #loginTab .login-container {
+                flex-direction: column;
+            }
+
+            .input-icon {
+                min-width: 35px;
+                padding: 8px;
+            }
+
+            /* Full width on mobile for date and textarea */
+            input[type="date"],
+            textarea {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="header">
+        <h1>🏫 School Lost & Found</h1>
+        <p id="motto">Report, search, and reclaim items easily</p>
+    </div>
+
+    <!-- LOGIN AND REGISTRATION -->
+    <div id="authCard" class="card">
+        <div class="nav-tabs" style="margin-bottom:12px">
+            <button class="nav-tab active" onclick="showAuthTab(event,'login')">Login</button>
+            <button class="nav-tab" onclick="showAuthTab(event,'register')">Register</button>
+        </div>
+
+        <div id="loginTab">
+            <!-- MODIFIED LOGIN FORM WITH ICONS -->
+            <div class="login-container">
+                <div class="login-logo">
+                    <img src="asserts/logo.png" alt="System Logo">
+                </div>
+                <div class="login-form-fields">
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label>Email or ID</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon"><i class="fas fa-user"></i></span>
+                                <input id="loginEmailTextfield" type="text" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon"><i class="fas fa-lock"></i></span>
+                                <input id="loginPasswordTextfield" type="password" required>
+                            </div>
+                        </div>
+                        <div class="flex"><button class="btn" type="submit">Login</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration form tab -->
+        <div id="registerTab" class="hidden">
+            <!-- MODIFIED REGISTER FORM WITH ICONS -->
+            <img src="asserts/sigh in.png" alt="Sign In Icon" class="register-icon">
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Full name</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon"><i class="fas fa-user"></i></span>
+                        <input id="regName" type="text" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                        <input id="regEmail" type="email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Student/Staff ID</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon"><i class="fas fa-id-card"></i></span>
+                        <input id="regId" type="text" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon"><i class="fas fa-user-tag"></i></span>
+                        <select id="regRole" required>
+                            <option value="">Select role</option>
+                            <option value="student">Student</option>
+                            <option value="staff">Staff</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon"><i class="fas fa-lock"></i></span>
+                        <input id="regPassword" type="password" required>
+                    </div>
+                </div>
+                <div class="flex" style="justify-content: center;"><button class="btn" type="submit">Register</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN INTERFACE AFTER LOGIN -->
+    <div id="appCard" class="hidden">
+        <!-- NEW NAVBAR -->
+        <div id="topNav">
+            <span id="menuIcon">☰</span>
+            <div>
+                <strong>Welcome, <span id="currentUserName"></span></strong>
+                <div class="small" id="currentUserRole"></div>
+            </div>
+            <button class="btn-secondary" onclick="logout()">Logout</button>
+        </div>
+
+        <!-- NEW SIDEBAR -->
+        <div id="sidebar">
+            <div id="closeSidebar">×</div>
+            <a href="#" class="sidebar-link" onclick="showDashboard()">Dashboard</a>
+            <a href="#" class="sidebar-link">Profile</a>
+            <a href="#" class="sidebar-link">Settings</a>
+            <a href="#" class="sidebar-link">Help</a>
+        </div>
+
+        <!-- NEW DASHBOARD -->
+        <div id="dashboardGrid">
+            <div class="dashboard-item" style="background-image: url('asserts/found.png');" onclick="showTabContent('browse')">
+                <div class="btn">Browse Items</div>
+            </div>
+            <div class="dashboard-item" style="background-image: url('asserts/report.png');" onclick="showTabContent('reportLost')">
+                <div class="btn">Report Lost</div>
+            </div>
+            <div class="dashboard-item" style="background-image: url('asserts/found.png');" onclick="showTabContent('reportFound')">
+                <div class="btn">Report Found</div>
+            </div>
+            <div class="dashboard-item" style="background-image: url('asserts/sigh in.png');" onclick="showTabContent('myReports')">
+                <div class="btn">My Reports</div>
+            </div>
+            <div class="dashboard-item" style="background-image: url('asserts/notification.png');" onclick="showTabContent('notifications')">
+                <div class="btn">Notifications <span id="notifyBadge" class="notify-badge hidden">0</span></div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT (Now hidden by default) -->
+        <div id="mainContentArea" class="hidden">
+            <button class="btn-secondary" style="margin-bottom: 15px;" onclick="showDashboard()">← Back to Dashboard</button>
+            <!-- TAB: BROWSE -->
+            <div id="browseTab" class="tab-content hidden">
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+                    <input id="searchInput" type="text" placeholder="Search by name or location..." style="flex:1;padding:8px;border-radius:8px;border:1px solid #dbeafe" oninput="renderBrowse()" />
+                    <select id="statusFilter" style="padding:8px;border-radius:8px;border:1px solid #dbeafe" onchange="renderBrowse()">
+                        <option value="">All</option>
+                        <option value="lost">Lost</option>
+                        <option value="found">Found</option>
+                        <option value="claimed">Claimed</option>
+                    </select>
+                    <button class="btn" onclick="renderBrowse()">Refresh</button>
+                </div>
+                <div id="itemsContainer" class="items-grid"></div>
+            </div>
+
+            <!-- TAB: REPORT LOST -->
+            <div id="reportLostTab" class="tab-content hidden">
+                <form id="lostForm">
+                    <div class="form-group">
+                        <label>Item name</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon"><i class="fas fa-tag"></i></span>
+                            <input id="lost_name" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon"><i class="fas fa-map-marker-alt"></i></span>
+                            <input id="lost_location" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="lost_description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Date lost</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon"><i class="fas fa-calendar"></i></span>
+                            <input id="lost_date" type="date" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Item Image</label>
+                        <div class="image-upload-container">
+                            <input type="file" id="lost_image" accept="image/*" style="display: none;">
+                            <label for="lost_image" class="upload-btn">
+                                <i class="fas fa-upload"></i> Choose Image
+                            </label>
+                            <img id="lost_image_preview" class="image-preview" alt="Image preview">
+                        </div>
+                    </div>
+                    <div class="flex"><button class="btn" type="submit">Report Lost Item</button></div>
+                </form>
+            </div>
+
+            <!-- TAB: REPORT FOUND -->
+            <div id="reportFoundTab" class="tab-content hidden">
+                <form id="foundForm">
+                    <div class="form-group">
+                        <label>Item name</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon"><i class="fas fa-tag"></i></span>
+                            <input id="found_name" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon"><i class="fas fa-map-marker-alt"></i></span>
+                            <input id="found_location" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="found_description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Date found</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon"><i class="fas fa-calendar"></i></span>
+                            <input id="found_date" type="date" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Item Image</label>
+                        <div class="image-upload-container">
+                            <input type="file" id="found_image" accept="image/*" style="display: none;">
+                            <label for="found_image" class="upload-btn">
+                                <i class="fas fa-upload"></i> Choose Image
+                            </label>
+                            <img id="found_image_preview" class="image-preview" alt="Image preview">
+                        </div>
+                    </div>
+                    <div class="flex"><button class="btn" type="submit">Report Found Item</button></div>
+                </form>
+            </div>
+
+            <!-- TAB: MY REPORTS -->
+            <div id="myReportsTab" class="tab-content hidden">
+                <h3>Your Reports</h3>
+                <div id="myReportsContainer" class="items-grid"></div>
+            </div>
+
+            <!-- TAB: NOTIFICATIONS -->
+            <div id="notificationsTab" class="tab-content hidden">
+                <h3>Notifications (possible matches)</h3>
+                <div id="notificationsContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <script>
+        (function() {
+            // App state . FOR DATA TO BE STORED ON LOCALSTORAGE SO THAT IT WORKS OFFLINE
+            let users = JSON.parse(localStorage.getItem('lostFoundUsers') || '[]');
+            let items = JSON.parse(localStorage.getItem('lostFoundItems') || '[]');
+            let notifications = JSON.parse(localStorage.getItem('lostFoundNotifications') || '[]');
+            let currentUser = null;
+
+            // ---------- Helper FUNCTION----------
+            function saveUsers() {
+                localStorage.setItem('lostFoundUsers', JSON.stringify(users));
+            }
+
+            function saveItems() {
+                localStorage.setItem('lostFoundItems', JSON.stringify(items));
+            }
+
+            function saveNotifications() {
+                localStorage.setItem('lostFoundNotifications', JSON.stringify(notifications));
+            }
+
+            function uid() {
+                return Date.now() + Math.floor(Math.random() * 999);
+            }
+
+            function todayISO() {
+                return new Date().toISOString().split('T')[0];
+            }
+
+            // ---------- Sample data (first run) ----------
+            function ensureSampleUsers() {
+                if (users.length === 0) {
+                    users.push({
+                        name: "Admin",
+                        email: "admin@school.edu",
+                        id: "A001",
+                        role: "admin",
+                        password: "admin123"
+                    });
+                    users.push({
+                        name: "John Doe",
+                        email: "john.doe@school.edu",
+                        id: "S001",
+                        role: "student",
+                        password: "student123"
+                    });
+                    users.push({
+                        name: "Jane Smith",
+                        email: "jane.smith@school.edu",
+                        id: "T001",
+                        role: "staff",
+                        password: "staff123"
+                    });
+                    saveUsers();
+                }
+            }
+
+            // ---------- UI utility ----------
+            function el(id) {
+                return document.getElementById(id);
+            }
+
+            function showAuthTab(ev, tab) {
+                el('loginTab').classList.toggle('hidden', tab !== 'login');
+                el('registerTab').classList.toggle('hidden', tab !== 'register');
+                const tabs = document.querySelectorAll('#authCard .nav-tab');
+                tabs.forEach(t => t.classList.remove('active'));
+                if (ev && ev.target) ev.target.classList.add('active');
+            }
+
+            // MODIFIED: Show specific tab content and hide dashboard
+            window.showTabContent = function(tab) {
+                const tabIds = {browse:'browseTab',reportLost:'reportLostTab',reportFound:'reportFoundTab',myReports:'myReportsTab',notifications:'notificationsTab'};
+                Object.values(tabIds).forEach(id => el(id).classList.add('hidden'));
+
+                el('dashboardGrid').classList.add('hidden');
+                el('mainContentArea').classList.remove('hidden');
+                el(tabIds[tab]).classList.remove('hidden');
+
+                // Refresh content for specific tabs
+                if(tab==='browse') renderBrowse();
+                if(tab==='myReports') renderMyReports();
+                if(tab==='notifications') renderNotifications();
+            }
+
+            // NEW: Show dashboard and hide tab content
+            window.showDashboard = function() {
+                el('mainContentArea').classList.add('hidden');
+                el('dashboardGrid').classList.remove('hidden');
+                el('sidebar').classList.remove('open');
+            }
+
+            function showAppFor(user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                el('authCard').classList.add('hidden');
+                el('appCard').classList.remove('hidden');
+                el('currentUserName').textContent = user.name;
+                el('currentUserRole').textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+                showDashboard(); // Show dashboard by default
+                renderNotifyBadge();
+            }
+
+            window.logout = function() {
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                el('authCard').classList.remove('hidden');
+                el('appCard').classList.add('hidden');
+            }
+
+            // ---------- Render functions ----------
+            function renderBrowse() {
+                const container = el('itemsContainer');
+                container.innerHTML = '';
+                const q = (el('searchInput') && el('searchInput').value || '').toLowerCase();
+                const statusFilter = (el('statusFilter') && el('statusFilter').value) || '';
+                const filtered = items.filter(it => {
+                    if (statusFilter && (statusFilter !== it.status && !(statusFilter === 'claimed' && it.status === 'claimed'))) return false;
+                    if (!q) return true;
+                    return it.name.toLowerCase().includes(q) || it.location.toLowerCase().includes(q) || (it.description || '').toLowerCase().includes(q);
+                }).sort((a, b) => b.id - a.id);
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="small">No items to show.</div>';
+                    return;
+                }
+                filtered.forEach(it => container.appendChild(itemCardElement(it)));
+            }
+
+            function renderMyReports() {
+                const container = el('myReportsContainer');
+                container.innerHTML = '';
+                const mine = items.filter(it => currentUser && it.userId === currentUser.id).sort((a, b) => b.id - a.id);
+                if (mine.length === 0) {
+                    container.innerHTML = '<div class="small">You have no reports yet.</div>';
+                    return;
+                }
+                mine.forEach(it => container.appendChild(itemCardElement(it)));
+            }
+
+            function renderNotifications() {
+                const container = el('notificationsContainer');
+                container.innerHTML = '';
+                if (!currentUser) {
+                    container.innerHTML = '<div class="small">No user.</div>';
+                    return;
+                }
+                const mine = notifications.filter(n => n.forUserId === currentUser.id).sort((a, b) => b.createdAt - a.createdAt);
+                if (mine.length === 0) {
+                    container.innerHTML = '<div class="small">No notifications.</div>';
+                    el('notifyBadge').classList.add('hidden');
+                    return;
+                }
+                mine.forEach(n => {
+                    const div = document.createElement('div');
+                    div.className = 'item-card'; // Re-using item-card style for consistency
+                    div.style.marginBottom = '10px';
+                    const seenMark = n.seen ? '' : '<span class="badge">NEW</span> ';
+                    const created = new Date(n.createdAt).toLocaleString();
+                    // build matched items display
+                    const matchesHtml = n.matches.map(id => {
+                        const itm = items.find(x => x.id === id);
+                        if (itm) return `<div style="margin:6px 0"><b>${itm.name}</b> — ${itm.type.toUpperCase()} (${itm.location}) reported by ${itm.reporter}</div>`;
+                        return `<div class="small">Item #${id} (missing)</div>`;
+                    }).join('');
+                    div.innerHTML = `
+            <div class="small">${seenMark}<strong>${n.title}</strong> <span style="float:right" class="small">${created}</span></div>
+            <div style="margin-top:8px">${n.message}</div>
+            <div style="margin-top:8px">${matchesHtml}</div>
+            <div style="margin-top:10px" class="flex">
+              <button class="btn-secondary" onclick="markNotificationSeen(${n.id})">Mark as read</button>
+              <button class="btn-secondary" onclick="dismissNotification(${n.id})">Dismiss</button>
+            </div>
+          `;
+                    container.appendChild(div);
+                });
+            }
+
+            function renderNotifyBadge() {
+                if (!currentUser) {
+                    el('notifyBadge').classList.add('hidden');
+                    return;
+                }
+                const count = notifications.filter(n => n.forUserId === currentUser.id && !n.seen).length;
+                const badge = el('notifyBadge');
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+
+            // ---------- item card creation ----------
+            function itemCardElement(it) {
+                const div = document.createElement('div');
+                div.className = 'item-card';
+                const statusClass = it.status === 'claimed' ? 'status-claimed' : (it.type === 'lost' ? 'status-lost' : 'status-found');
+                const statusText = it.status === 'claimed' ? 'CLAIMED' : it.type.toUpperCase();
+
+                // Create image HTML if available
+                const imageHtml = it.image ? `<img src="${it.image}" class="item-image" alt="${it.name}">` : '';
+
+                div.innerHTML = `
+          <div class="item-status ${statusClass}">${statusText}</div>
+          ${imageHtml}
+          <h3 style="margin:.3rem 0">${it.name}</h3>
+          <div class="small"><b>Location:</b> ${it.location}</div>
+          <div class="small"><b>Date:</b> ${it.date}</div>
+          <div class="small" style="margin-top:6px">${it.description || ''}</div>
+          <div class="small" style="margin-top:8px"><b>Reported by:</b> ${it.reporter}</div>
+          <div style="margin-top:10px" class="flex">
+            ${ (it.status !== 'claimed' && currentUser && (currentUser.id === it.userId || currentUser.role === 'admin')) ? `<button class="btn-secondary" onclick="markItemClaimed(${it.id})">Mark as Claimed</button>` : ''}
+            ${ (it.status !== 'claimed' && currentUser && currentUser.id !== it.userId) ? `<button class="btn" onclick="createClaim(${it.id})">I want to claim</button>` : '' }
+          </div>
+        `;
+                return div;
+            }
+
+            // ---------- matching logic & notifications ----------
+            function checkMatchesFor(newItem) {
+                const lowerName = (newItem.name || '').toLowerCase();
+                const lowerLocation = (newItem.location || '').toLowerCase();
+                const oppositeType = newItem.type === 'lost' ? 'found' : 'lost';
+                const matches = items.filter(it =>
+                    it.type === oppositeType && it.status !== 'claimed' && it.id !== newItem.id &&
+                    (
+                        (it.name || '').toLowerCase().includes(lowerName) ||
+                        lowerName.includes((it.name || '').toLowerCase()) ||
+                        (it.location || '').toLowerCase().includes(lowerLocation) ||
+                        lowerLocation.includes((it.location || '').toLowerCase())
+                    )
+                ).map(it => it.id);
+
+                if (matches.length > 0) {
+                    const n1 = { id: uid(), forUserId: newItem.userId, createdAt: Date.now(), seen: false, title: `Possible matches for "${newItem.name}"`, message: `We found ${matches.length} potential match(es).`, matches: matches };
+                    notifications.push(n1);
+                    saveNotifications();
+                    renderNotifyBadge();
+                    alert(`🔔 Possible match detected! Check the Notifications tab.`);
+                }
+            }
+
+            // notification controls
+            window.markNotificationSeen = function(nid) {
+                notifications = notifications.map(n => n.id === nid ? { ...n, seen: true } : n);
+                saveNotifications();
+                renderNotifications();
+                renderNotifyBadge();
+            };
+
+            window.dismissNotification = function(nid) {
+                notifications = notifications.filter(n => n.id !== nid);
+                saveNotifications();
+                renderNotifications();
+                renderNotifyBadge();
+            };
+
+            // ---------- register/login handlers ----------
+            function registerUser(ev) {
+                ev.preventDefault();
+                const name = el('regName').value.trim();
+                const email = el('regEmail').value.trim().toLowerCase();
+                const id = el('regId').value.trim();
+                const role = el('regRole').value;
+                const pw = el('regPassword').value;
+                if (!name || !email || !id || !role || !pw) {
+                    alert('Please complete the form.');
+                    return;
+                }
+                if (users.find(u => u.email === email || u.id === id)) {
+                    alert('A user with this email or ID already exists');
+                    return;
+                }
+                const u = { name, email, id, role, password: pw };
+                users.push(u);
+                saveUsers();
+                alert('Registered successfully — please login.');
+                showAuthTab(null, 'login');
+                ev.target.reset();
+            }
+
+            function loginUser(ev) {
+                ev.preventDefault();
+                const ident = el('loginEmailTextfield').value.trim().toLowerCase();
+                const pw = el('loginPasswordTextfield').value;
+                const u = users.find(user => (user.email === ident || user.id === ident) && user.password === pw);
+                if (!u) {
+                    alert('Invalid credentials — try sample accounts or register.');
+                    return;
+                }
+                showAppFor(u);
+            }
+
+            // ---------- image handling ----------
+            function handleImageUpload(inputElement, previewElement) {
+                return new Promise((resolve) => {
+                    const file = inputElement.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewElement.src = e.target.result;
+                            previewElement.style.display = 'block';
+                            resolve(e.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        resolve(null);
+                    }
+                });
+            }
+
+            // ---------- item reporting handlers ----------
+            async function submitLost(ev) {
+                ev.preventDefault();
+                if (!currentUser) {
+                    alert('Please login first.');
+                    return;
+                }
+                const name = el('lost_name').value.trim();
+                const location = el('lost_location').value.trim();
+                const description = el('lost_description').value.trim();
+                const date = el('lost_date').value || todayISO();
+                if (!name || !location || !date) {
+                    alert('Please fill required fields');
+                    return;
+                }
+
+                // Handle image upload
+                const image = await handleImageUpload(el('lost_image'), el('lost_image_preview'));
+
+                const it = {
+                    id: uid(),
+                    type: 'lost',
+                    name,
+                    location,
+                    description,
+                    date,
+                    reporter: currentUser.name,
+                    userId: currentUser.id,
+                    status: 'active',
+                    image: image
+                };
+                items.push(it);
+                saveItems();
+                checkMatchesFor(it);
+                alert('Lost item reported.');
+                ev.target.reset();
+                el('lost_image_preview').style.display = 'none';
+                showDashboard();
+            }
+
+            async function submitFound(ev) {
+                ev.preventDefault();
+                if (!currentUser) {
+                    alert('Please login first.');
+                    return;
+                }
+                const name = el('found_name').value.trim();
+                const location = el('found_location').value.trim();
+                const description = el('found_description').value.trim();
+                const date = el('found_date').value || todayISO();
+                if (!name || !location || !date) {
+                    alert('Please fill required fields');
+                    return;
+                }
+
+                // Handle image upload
+                const image = await handleImageUpload(el('found_image'), el('found_image_preview'));
+
+                const it = {
+                    id: uid(),
+                    type: 'found',
+                    name,
+                    location,
+                    description,
+                    date,
+                    reporter: currentUser.name,
+                    userId: currentUser.id,
+                    status: 'active',
+                    image: image
+                };
+                items.push(it);
+                saveItems();
+                checkMatchesFor(it);
+                alert('Found item reported.');
+                ev.target.reset();
+                el('found_image_preview').style.display = 'none';
+                showDashboard();
+            }
+
+            // ---------- claims & contact ----------
+            window.createClaim = function(itemId) {
+                const it = items.find(x => x.id === itemId);
+                if (!it) { alert('Item not found'); return; }
+                if (!currentUser) { alert('Please login to claim'); return; }
+                const note = { id: uid(), forUserId: it.userId, createdAt: Date.now(), seen: false, title: `Claim attempt for "${it.name}"`, message: `${currentUser.name} (ID: ${currentUser.id}) submitted a claim.`, matches: [it.id] };
+                notifications.push(note);
+                saveNotifications();
+                renderNotifyBadge();
+                alert('Claim sent to reporter via notification.');
+            };
+
+            window.markItemClaimed = function(itemId) {
+                items = items.map(it => it.id === itemId ? { ...it, status: 'claimed' } : it);
+                saveItems();
+                renderBrowse();
+                renderMyReports();
+            };
+
+            // ---------- init ----------
+            function init() {
+                ensureSampleUsers();
+                // Hooks
+                el('registerForm').addEventListener('submit', registerUser);
+                el('loginForm').addEventListener('submit', loginUser);
+                el('lostForm').addEventListener('submit', submitLost);
+                el('foundForm').addEventListener('submit', submitFound);
+
+                // Image upload preview handlers
+                el('lost_image').addEventListener('change', function() {
+                    handleImageUpload(this, el('lost_image_preview'));
+                });
+
+                el('found_image').addEventListener('change', function() {
+                    handleImageUpload(this, el('found_image_preview'));
+                });
+
+                // Sidebar hooks
+                el('menuIcon').addEventListener('click', () => el('sidebar').classList.add('open'));
+                el('closeSidebar').addEventListener('click', () => el('sidebar').classList.remove('open'));
+
+                // Set default dates
+                el('lost_date').value = todayISO();
+                el('found_date').value = todayISO();
+
+                // Auto login if saved
+                const saved = localStorage.getItem('currentUser');
+                if (saved) {
+                    currentUser = JSON.parse(saved);
+                    showAppFor(currentUser);
+                }
+            }
+
+            // Expose some actions to global
+            window.showAuthTab = showAuthTab;
+
+            init();
+        })();
+</script>
+</body>
+</html>
+
+<script>
+    (function() {
+        // App state . FOR DATA TO BE STORED ON LOCALSTORAGE SO THAT IT WORKS OFFLINE
+        let users = JSON.parse(localStorage.getItem('lostFoundUsers') || '[]');
+        let items = JSON.parse(localStorage.getItem('lostFoundItems') || '[]');
+        let notifications = JSON.parse(localStorage.getItem('lostFoundNotifications') || '[]');
+        let currentUser = null;
+
+        // ---------- Helper FUNCTION----------
+        function saveUsers() {
+            localStorage.setItem('lostFoundUsers', JSON.stringify(users));
+        }
+
+        function saveItems() {
+            localStorage.setItem('lostFoundItems', JSON.stringify(items));
+        }
+
+        function saveNotifications() {
+            localStorage.setItem('lostFoundNotifications', JSON.stringify(notifications));
+        }
+
+        function uid() {
+            return Date.now() + Math.floor(Math.random() * 999);
+        }
+
+        function todayISO() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        // ---------- Sample data (first run) ----------
+        function ensureSampleUsers() {
+            if (users.length === 0) {
+                users.push({
+                    name: "Admin",
+                    email: "admin@school.edu",
+                    id: "A001",
+                    role: "admin",
+                    password: "admin123"
+                });
+                users.push({
+                    name: "John Doe",
+                    email: "john.doe@school.edu",
+                    id: "S001",
+                    role: "student",
+                    password: "student123"
+                });
+                users.push({
+                    name: "Jane Smith",
+                    email: "jane.smith@school.edu",
+                    id: "T001",
+                    role: "staff",
+                    password: "staff123"
+                });
+                saveUsers();
+            }
+        }
+
+        // ---------- UI utility ----------
+        function el(id) {
+            return document.getElementById(id);
+        }
+
+        function showAuthTab(ev, tab) {
+            el('loginTab').classList.toggle('hidden', tab !== 'login');
+            el('registerTab').classList.toggle('hidden', tab !== 'register');
+            const tabs = document.querySelectorAll('#authCard .nav-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            if (ev && ev.target) ev.target.classList.add('active');
+        }
+
+        // MODIFIED: Show specific tab content and hide dashboard
+        window.showTabContent = function(tab) {
+            const tabIds = {browse:'browseTab',reportLost:'reportLostTab',reportFound:'reportFoundTab',myReports:'myReportsTab',notifications:'notificationsTab'};
+            Object.values(tabIds).forEach(id => el(id).classList.add('hidden'));
+
+            el('dashboardGrid').classList.add('hidden');
+            el('mainContentArea').classList.remove('hidden');
+            el(tabIds[tab]).classList.remove('hidden');
+
+            // Refresh content for specific tabs
+            if(tab==='browse') renderBrowse();
+            if(tab==='myReports') renderMyReports();
+            if(tab==='notifications') renderNotifications();
+        }
+
+        // NEW: Show dashboard and hide tab content
+        window.showDashboard = function() {
+            el('mainContentArea').classList.add('hidden');
+            el('dashboardGrid').classList.remove('hidden');
+            el('sidebar').classList.remove('open');
+        }
+
+        function showAppFor(user) {
+            currentUser = user;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            el('authCard').classList.add('hidden');
+            el('appCard').classList.remove('hidden');
+            el('currentUserName').textContent = user.name;
+            el('currentUserRole').textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+            showDashboard(); // Show dashboard by default
+            renderNotifyBadge();
+        }
+
+        window.logout = function() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            el('authCard').classList.remove('hidden');
+            el('appCard').classList.add('hidden');
+        }
+
+        // ---------- Render functions ----------
+        function renderBrowse() {
+            const container = el('itemsContainer');
+            container.innerHTML = '';
+            const q = (el('searchInput') && el('searchInput').value || '').toLowerCase();
+            const statusFilter = (el('statusFilter') && el('statusFilter').value) || '';
+            const filtered = items.filter(it => {
+                if (statusFilter && (statusFilter !== it.status && !(statusFilter === 'claimed' && it.status === 'claimed'))) return false;
+                if (!q) return true;
+                return it.name.toLowerCase().includes(q) || it.location.toLowerCase().includes(q) || (it.description || '').toLowerCase().includes(q);
+            }).sort((a, b) => b.id - a.id);
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="small">No items to show.</div>';
+                return;
+            }
+            filtered.forEach(it => container.appendChild(itemCardElement(it)));
+        }
+
+        function renderMyReports() {
+            const container = el('myReportsContainer');
+            container.innerHTML = '';
+            const mine = items.filter(it => currentUser && it.userId === currentUser.id).sort((a, b) => b.id - a.id);
+            if (mine.length === 0) {
+                container.innerHTML = '<div class="small">You have no reports yet.</div>';
+                return;
+            }
+            mine.forEach(it => container.appendChild(itemCardElement(it)));
+        }
+
+        function renderNotifications() {
+            const container = el('notificationsContainer');
+            container.innerHTML = '';
+            if (!currentUser) {
+                container.innerHTML = '<div class="small">No user.</div>';
+                return;
+            }
+            const mine = notifications.filter(n => n.forUserId === currentUser.id).sort((a, b) => b.createdAt - a.createdAt);
+            if (mine.length === 0) {
+                container.innerHTML = '<div class="small">No notifications.</div>';
+                el('notifyBadge').classList.add('hidden');
+                return;
+            }
+            mine.forEach(n => {
+                const div = document.createElement('div');
+                div.className = 'item-card'; // Re-using item-card style for consistency
+                div.style.marginBottom = '10px';
+                const seenMark = n.seen ? '' : '<span class="badge">NEW</span> ';
+                const created = new Date(n.createdAt).toLocaleString();
+                // build matched items display
+                const matchesHtml = n.matches.map(id => {
+                    const itm = items.find(x => x.id === id);
+                    if (itm) return `<div style="margin:6px 0"><b>${itm.name}</b> — ${itm.type.toUpperCase()} (${itm.location}) reported by ${itm.reporter}</div>`;
+                    return `<div class="small">Item #${id} (missing)</div>`;
+                }).join('');
+                div.innerHTML = `
+            <div class="small">${seenMark}<strong>${n.title}</strong> <span style="float:right" class="small">${created}</span></div>
+            <div style="margin-top:8px">${n.message}</div>
+            <div style="margin-top:8px">${matchesHtml}</div>
+            <div style="margin-top:10px" class="flex">
+              <button class="btn-secondary" onclick="markNotificationSeen(${n.id})">Mark as read</button>
+              <button class="btn-secondary" onclick="dismissNotification(${n.id})">Dismiss</button>
+            </div>
+          `;
+                container.appendChild(div);
+            });
+        }
+
+        function renderNotifyBadge() {
+            if (!currentUser) {
+                el('notifyBadge').classList.add('hidden');
+                return;
+            }
+            const count = notifications.filter(n => n.forUserId === currentUser.id && !n.seen).length;
+            const badge = el('notifyBadge');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // ---------- item card creation ----------
+        function itemCardElement(it) {
+            const div = document.createElement('div');
+            div.className = 'item-card';
+            const statusClass = it.status === 'claimed' ? 'status-claimed' : (it.type === 'lost' ? 'status-lost' : 'status-found');
+            const statusText = it.status === 'claimed' ? 'CLAIMED' : it.type.toUpperCase();
+
+            // Create image HTML if available
+            const imageHtml = it.image ? `<img src="${it.image}" class="item-image" alt="${it.name}">` : '';
+
+            div.innerHTML = `
+          <div class="item-status ${statusClass}">${statusText}</div>
+          ${imageHtml}
+          <h3 style="margin:.3rem 0">${it.name}</h3>
+          <div class="small"><b>Location:</b> ${it.location}</div>
+          <div class="small"><b>Date:</b> ${it.date}</div>
+          <div class="small" style="margin-top:6px">${it.description || ''}</div>
+          <div class="small" style="margin-top:8px"><b>Reported by:</b> ${it.reporter}</div>
+          <div style="margin-top:10px" class="flex">
+            ${ (it.status !== 'claimed' && currentUser && (currentUser.id === it.userId || currentUser.role === 'admin')) ? `<button class="btn-secondary" onclick="markItemClaimed(${it.id})">Mark as Claimed</button>` : ''}
+            ${ (it.status !== 'claimed' && currentUser && currentUser.id !== it.userId) ? `<button class="btn" onclick="createClaim(${it.id})">I want to claim</button>` : '' }
+          </div>
+        `;
+            return div;
+        }
+
+        // ---------- matching logic & notifications ----------
+        function checkMatchesFor(newItem) {
+            const lowerName = (newItem.name || '').toLowerCase();
+            const lowerLocation = (newItem.location || '').toLowerCase();
+            const oppositeType = newItem.type === 'lost' ? 'found' : 'lost';
+            const matches = items.filter(it =>
+                it.type === oppositeType && it.status !== 'claimed' && it.id !== newItem.id &&
+                (
+                    (it.name || '').toLowerCase().includes(lowerName) ||
+                    lowerName.includes((it.name || '').toLowerCase()) ||
+                    (it.location || '').toLowerCase().includes(lowerLocation) ||
+                    lowerLocation.includes((it.location || '').toLowerCase())
+                )
+            ).map(it => it.id);
+
+            if (matches.length > 0) {
+                const n1 = { id: uid(), forUserId: newItem.userId, createdAt: Date.now(), seen: false, title: `Possible matches for "${newItem.name}"`, message: `We found ${matches.length} potential match(es).`, matches: matches };
+                notifications.push(n1);
+                saveNotifications();
+                renderNotifyBadge();
+                alert(`🔔 Possible match detected! Check the Notifications tab.`);
+            }
+        }
+
+        // notification controls
+        window.markNotificationSeen = function(nid) {
+            notifications = notifications.map(n => n.id === nid ? { ...n, seen: true } : n);
+            saveNotifications();
+            renderNotifications();
+            renderNotifyBadge();
+        };
+
+        window.dismissNotification = function(nid) {
+            notifications = notifications.filter(n => n.id !== nid);
+            saveNotifications();
+            renderNotifications();
+            renderNotifyBadge();
+        };
+
+        // ---------- register/login handlers ----------
+        function registerUser(ev) {
+            ev.preventDefault();
+            const name = el('regName').value.trim();
+            const email = el('regEmail').value.trim().toLowerCase();
+            const id = el('regId').value.trim();
+            const role = el('regRole').value;
+            const pw = el('regPassword').value;
+            if (!name || !email || !id || !role || !pw) {
+                alert('Please complete the form.');
+                return;
+            }
+            if (users.find(u => u.email === email || u.id === id)) {
+                alert('A user with this email or ID already exists');
+                return;
+            }
+            const u = { name, email, id, role, password: pw };
+            users.push(u);
+            saveUsers();
+            alert('Registered successfully — please login.');
+            showAuthTab(null, 'login');
+            ev.target.reset();
+        }
+
+        function loginUser(ev) {
+            ev.preventDefault();
+            const ident = el('loginEmailTextfield').value.trim().toLowerCase();
+            const pw = el('loginPasswordTextfield').value;
+            const u = users.find(user => (user.email === ident || user.id === ident) && user.password === pw);
+            if (!u) {
+                alert('Invalid credentials — try sample accounts or register.');
+                return;
+            }
+            showAppFor(u);
+        }
+
+        // ---------- image handling ----------
+        function handleImageUpload(inputElement, previewElement) {
+            return new Promise((resolve) => {
+                const file = inputElement.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewElement.src = e.target.result;
+                        previewElement.style.display = 'block';
+                        resolve(e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    resolve(null);
+                }
+            });
+        }
+
+        // ---------- item reporting handlers ----------
+        async function submitLost(ev) {
+            ev.preventDefault();
+            if (!currentUser) {
+                alert('Please login first.');
+                return;
+            }
+            const name = el('lost_name').value.trim();
+            const location = el('lost_location').value.trim();
+            const description = el('lost_description').value.trim();
+            const date = el('lost_date').value || todayISO();
+            if (!name || !location || !date) {
+                alert('Please fill required fields');
+                return;
+            }
+
+            // Handle image upload
+            const image = await handleImageUpload(el('lost_image'), el('lost_image_preview'));
+
+            const it = {
+                id: uid(),
+                type: 'lost',
+                name,
+                location,
+                description,
+                date,
+                reporter: currentUser.name,
+                userId: currentUser.id,
+                status: 'active',
+                image: image
+            };
+            items.push(it);
+            saveItems();
+            checkMatchesFor(it);
+            alert('Lost item reported.');
+            ev.target.reset();
+            el('lost_image_preview').style.display = 'none';
+            showDashboard();
+        }
+
+        async function submitFound(ev) {
+            ev.preventDefault();
+            if (!currentUser) {
+                alert('Please login first.');
+                return;
+            }
+            const name = el('found_name').value.trim();
+            const location = el('found_location').value.trim();
+            const description = el('found_description').value.trim();
+            const date = el('found_date').value || todayISO();
+            if (!name || !location || !date) {
+                alert('Please fill required fields');
+                return;
+            }
+
+            // Handle image upload
+            const image = await handleImageUpload(el('found_image'), el('found_image_preview'));
+
+            const it = {
+                id: uid(),
+                type: 'found',
+                name,
+                location,
+                description,
+                date,
+                reporter: currentUser.name,
+                userId: currentUser.id,
+                status: 'active',
+                image: image
+            };
+            items.push(it);
+            saveItems();
+            checkMatchesFor(it);
+            alert('Found item reported.');
+            ev.target.reset();
+            el('found_image_preview').style.display = 'none';
+            showDashboard();
+        }
+
+        // ---------- claims & contact ----------
+        window.createClaim = function(itemId) {
+            const it = items.find(x => x.id === itemId);
+            if (!it) { alert('Item not found'); return; }
+            if (!currentUser) { alert('Please login to claim'); return; }
+            const note = { id: uid(), forUserId: it.userId, createdAt: Date.now(), seen: false, title: `Claim attempt for "${it.name}"`, message: `${currentUser.name} (ID: ${currentUser.id}) submitted a claim.`, matches: [it.id] };
+            notifications.push(note);
+            saveNotifications();
+            renderNotifyBadge();
+            alert('Claim sent to reporter via notification.');
+        };
+
+        window.markItemClaimed = function(itemId) {
+            items = items.map(it => it.id === itemId ? { ...it, status: 'claimed' } : it);
+            saveItems();
+            renderBrowse();
+            renderMyReports();
+        };
+
+        // ---------- init ----------
+        function init() {
+            ensureSampleUsers();
+            // Hooks
+            el('registerForm').addEventListener('submit', registerUser);
+            el('loginForm').addEventListener('submit', loginUser);
+            el('lostForm').addEventListener('submit', submitLost);
+            el('foundForm').addEventListener('submit', submitFound);
+
+            // Image upload preview handlers
+            el('lost_image').addEventListener('change', function() {
+                handleImageUpload(this, el('lost_image_preview'));
+            });
+
+            el('found_image').addEventListener('change', function() {
+                handleImageUpload(this, el('found_image_preview'));
+            });
+
+            // Sidebar hooks
+            el('menuIcon').addEventListener('click', () => el('sidebar').classList.add('open'));
+            el('closeSidebar').addEventListener('click', () => el('sidebar').classList.remove('open'));
+
+            // Set default dates
+            el('lost_date').value = todayISO();
+            el('found_date').value = todayISO();
+
+            // Auto login if saved
+            const saved = localStorage.getItem('currentUser');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+                showAppFor(currentUser);
+            }
+        }
+
+        // Expose some actions to global
+        window.showAuthTab = showAuthTab;
+
+        init();
+    })();
+</script>
+</body>
+</html>
